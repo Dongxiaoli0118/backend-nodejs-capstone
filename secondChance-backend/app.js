@@ -8,11 +8,15 @@ const connectToDatabase = require('./models/db');
 const {loadData} = require("./util/import-mongo/index");
 const secondChanceRoutes = require('./routes/secondChanceItemsRoutes');
 const searchRoutes = require('./routes/searchRoutes');
-
+const authRoutes = require('./routes/authRoutes');
+const path = require('path')
 const app = express();
+app.use(express.json());
+
 app.use("*",cors());
-app.use('/api/secondchance/search', searchRoutes);
-app.use('/api/secondchance/items', secondChanceRoutes);
+app.use('/api/search', searchRoutes);
+app.use('/api/items', secondChanceRoutes);
+app.use('/api/auth', authRoutes);
 const port = 3060;
 
 // Connect to MongoDB; we just do this one time

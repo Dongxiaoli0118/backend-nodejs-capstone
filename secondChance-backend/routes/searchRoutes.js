@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const connectToDatabase = require('../models/db');
+require('dotenv').config();
 
 // Search for gifts
 router.get('/', async (req, res, next) => {
@@ -9,7 +10,7 @@ router.get('/', async (req, res, next) => {
         const db = await connectToDatabase();
 
 
-        const collection = db.collection("secondChanceItems");
+        const collection = db.collection(process.env.MONGO_COLLECTION);
 
         // Initialize the query object
         let query = {};

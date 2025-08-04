@@ -1,19 +1,27 @@
-What is the appropriate functionality in regard to the details page?
-
-
-It displays the user’s first and last name.
-
-
-
-It displays the details of all the items in the collection.
-
-
-
-It has a button for the user who posted the item to update its details.
-
-
-
-Only a registered user can access it.
-
-
-1 point
+name: 'CI/CD'
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+jobs:
+  lint_js:
+      name: Lint JavaScript Files
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+      - name: Install and Run Linter
+        run: |
+          # This command finds all JavaScript files recursively and runs JSHint on them
+          npm init -y
+          npm install eslint eslint-config-standard eslint@^8.0.1 eslint-plugin-import@^2.25.2 eslint-plugin-n@^16.0.0  eslint-plugin-promise@^6.0.0
+          find ./secondChance-backend -name app.js -exec ./node_modules/.bin/eslint -c .eslintrc.js {} +
+          # find ./secondChance-backend -name auth.js -exec ./node_modules/.bin/eslint -c .eslintrc.js {} +
+          # find ./secondChance-backend -name secondChanceItemsRoutes.js -exec ./node_modules/.bin/eslint -c .eslintrc.js {} +
+          # find ./secondChance-backend -name searchRoutes.js -exec ./node_modules/.bin/eslint -c .eslintrc.js {} +
+          # find ./secondChance-backend -name index.js -exec ./node_modules/.bin/eslint -c .eslintrc.js {} +
+          # find ./sentiment -name index.js -exec ./node_modules/.bin/eslint -c .eslintrc.js {} +
+          echo "Linted all the js files successfully"

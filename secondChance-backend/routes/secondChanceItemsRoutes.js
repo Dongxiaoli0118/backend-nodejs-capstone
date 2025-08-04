@@ -11,12 +11,12 @@ const directoryPath = 'public/images';
 
 // Set up storage for uploaded files
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, directoryPath); // Specify the upload directory
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname); // Use the original file name
-  },
+    destination: function (req, file, cb) {
+        cb(null, directoryPath); // Specify the upload directory
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname); // Use the original file name
+    },
 });
 
 const upload = multer({ storage: storage });
@@ -37,31 +37,49 @@ router.get('/', async (req, res, next) => {
 });
 
 // Add a new item
-router.post('/', upload.single('file'), async(req, res,next) => {
-    try {
+const { ObjectId } = require('mongodb'); // 如果你后续要用 _id
 
-        const db = await connectToDatabase();
-        const collection = db.collection("secondChanceItems");
-        let secondChanceItem=req.body;
-        const lastItemQuery = await collection.find().sort({'id': -1}).limit(1);
-        await lastItemQuery.forEach(item => {
-        secondChanceItem.id = (parseInt(item.id) + 1).toString();
-        });
-        const date_added = Math.floor(new Date().getTime() / 1000);
-        secondChanceItem.date_added = date_added
-        secondChanceItem = await collection.insertOne(secondChanceItem);
-        res.status(201).json(secondChanceItem.ops[0]);
-    } catch (e) {
-        next(e);
+router.post('/', upload.single('file'), async (req, res, next) => {
+  try {
+    const db = await connectToDatabase();
+    const collection = db.collection("secondChanceItems");
+
+    let secondChanceItem = req.body;
+
+    // 获取当前最大 id（假设你是自己维护 string 型 id）
+    const lastItems = await collection.find().sort({ id: -1 }).limit(1).toArray();
+    if (lastItems.length > 0) {
+      secondChanceItem.id = (parseInt(lastItems[0].id) + 1).toString();
+    } else {
+      secondChanceItem.id = "1"; // 第一个 item
     }
+
+    // 添加时间戳
+    const date_added = Math.floor(new Date().getTime() / 1000);
+    secondChanceItem.date_added = date_added;
+
+    // 插入新文档
+    const insertResult = await collection.insertOne(secondChanceItem);
+
+    // 再查一遍新插入的文档返回给前端（因为 insertOne 不返回文档内容）
+    const insertedItem = await collection.findOne({ _id: insertResult.insertedId });
+
+    res.status(201).json(insertedItem);
+  } catch (e) {
+    console.error('Error inserting item:', e);
+    next(e);
+  }
 });
+
 
 // Get a single secondChanceItem by ID
 router.get('/:id', async (req, res, next) => {
     try {
         const db = await connectToDatabase();
         const collection = db.collection("secondChanceItems");
-        const secondChanceItem=await collection.findOne({id})
+        const id = req.params.id;  // 从 URL 路径中获取 id 参数
+
+        const secondChanceItem = await collection.findOne({ id })
         res.json(secondChanceItem);
     } catch (e) {
         next(e);
@@ -69,7 +87,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Update and existing item
-router.put('/:id', async(req, res,next) => {
+router.put('/:id', async (req, res, next) => {
     try {
         const db = await connectToDatabase();
         const collection = db.collection("secondChanceItems");
@@ -93,7 +111,7 @@ router.put('/:id', async(req, res,next) => {
 });
 
 // Delete an existing item
-router.delete('/:id', async(req, res,next) => {
+router.delete('/:id', async (req, res, next) => {
     try {
         const db = await connectToDatabase();
         const collection = db.collection("secondChanceItems");

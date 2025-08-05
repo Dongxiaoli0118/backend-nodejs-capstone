@@ -11,12 +11,12 @@ const directoryPath = 'public/images';
 
 // Set up storage for uploaded files
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, directoryPath); // Specify the upload directory
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname); // Use the original file name
-    },
+  destination: function (req, file, cb) {
+    cb(null, directoryPath); // Specify the upload directory
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname); // Use the original file name
+  },
 });
 
 const upload = multer({ storage: storage });
@@ -24,16 +24,16 @@ const upload = multer({ storage: storage });
 
 // Get all secondChanceItems
 router.get('/', async (req, res, next) => {
-    logger.info('/ called');
-    try {
-        const db = await connectToDatabase();
-        const collection = db.collection("secondChanceItems");
-        const secondChanceItems = await collection.find({}).toArray();
-        res.json(secondChanceItems);
-    } catch (e) {
-        logger.console.error('oops something went wrong', e)
-        next(e);
-    }
+  logger.info('/ called');
+  try {
+    const db = await connectToDatabase();
+    const collection = db.collection("secondChanceItems");
+    const secondChanceItems = await collection.find({}).toArray();
+    res.json(secondChanceItems);
+  } catch (e) {
+    logger.console.error('oops something went wrong', e)
+    next(e);
+  }
 });
 
 // Add a new item
@@ -74,60 +74,60 @@ router.post('/', upload.single('file'), async (req, res, next) => {
 
 // Get a single secondChanceItem by ID
 router.get('/:id', async (req, res, next) => {
-    try {
-        const db = await connectToDatabase();
-        const collection = db.collection("secondChanceItems");
-        const id = req.params.id;  // 从 URL 路径中获取 id 参数
+  try {
+    const db = await connectToDatabase();
+    const collection = db.collection("secondChanceItems");
+    const id = req.params.id;  // 从 URL 路径中获取 id 参数
 
-        const secondChanceItem = await collection.findOne({ id })
-        res.json(secondChanceItem);
-    } catch (e) {
-        next(e);
-    }
+    const secondChanceItem = await collection.findOne({ id })
+    res.json(secondChanceItem);
+  } catch (e) {
+    next(e);
+  }
 });
 
 // Update and existing item
 router.put('/:id', async (req, res, next) => {
-    try {
-        const db = await connectToDatabase();
-        const collection = db.collection("secondChanceItems");
-        const id = req.params.id;
-        const updatedData = req.body;
+  try {
+    const db = await connectToDatabase();
+    const collection = db.collection("secondChanceItems");
+    const id = req.params.id;
+    const updatedData = req.body;
 
-        const result = await collection.updateOne(
-            { id: id },
-            { $set: updatedData }
-        );
+    const result = await collection.updateOne(
+      { id: id },
+      { $set: updatedData }
+    );
 
-        if (result.matchedCount === 0) {
-            return res.status(404).json({ message: 'Item not found' });
-        }
-
-        res.status(200).json({ message: 'Item updated successfully' });
-
-    } catch (e) {
-        next(e);
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: 'Item not found' });
     }
+
+    res.status(200).json({ message: 'Item updated successfully' });
+
+  } catch (e) {
+    next(e);
+  }
 });
 
 // Delete an existing item
 router.delete('/:id', async (req, res, next) => {
-    try {
-        const db = await connectToDatabase();
-        const collection = db.collection("secondChanceItems");
+  try {
+    const db = await connectToDatabase();
+    const collection = db.collection("secondChanceItems");
 
-        const id = req.params.id;
+    const id = req.params.id;
 
-        const result = await collection.deleteOne({ id: id });
+    const result = await collection.deleteOne({ id: id });
 
-        if (result.deletedCount === 0) {
-            return res.status(404).json({ message: 'Item not found' });
-        }
-
-        res.status(200).json({ message: 'Item deleted successfully' });
-    } catch (e) {
-        next(e);
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Item not found' });
     }
+
+    res.status(200).json({ message: 'Item deleted successfully' });
+  } catch (e) {
+    next(e);
+  }
 });
 
 module.exports = router;

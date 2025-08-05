@@ -33,5 +33,9 @@ module.exports = {
     "spaced-comment": ["error", "always"],
     'no-undef': 'off',         // 关闭变量未定义检查
     'no-unused-vars': 'off',   // 关闭未使用变量检查
-  }
+"object-curly-spacing": "off",
+    "quotes": "off",
+    "semi": "off",
+    "no-multiple-empty-lines": "off"  
+}
 }

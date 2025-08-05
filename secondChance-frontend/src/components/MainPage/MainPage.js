@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {urlConfig} from '../../config';
 import { useAppContext } from '../../context/AppContext';
+import {authorizedFetch} from '../../fetch'
 
 function MainPage() {
     const [items, setItems] = useState([])
@@ -14,7 +15,7 @@ function MainPage() {
         const fetchItems = async () => {
             try {
                 let url = `${urlConfig.backendUrl}/api/secondchance/items`
-                const response = await fetch(url);
+                const response = await authorizedFetch(url);
                 if (!response.ok) {
                     //something went wrong
                     throw new Error(`HTTP error; ${response.status}`)

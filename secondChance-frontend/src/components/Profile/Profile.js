@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import './Profile.css'
 import {urlConfig} from '../../config';
 import { useAppContext } from '../../context/AppContext';
+import {authorizedFetch} from '../../fetch'
 
 const Profile = () => {
   const [userDetails, setUserDetails] = useState({});
@@ -64,7 +65,7 @@ const handleSubmit = async (e) => {
     }
 
     const payload = { ...updatedDetails };
-    const response = await fetch(`${urlConfig.backendUrl}/api/auth/update`, {
+    const response = await authorizedFetch(`${urlConfig.backendUrl}/api/auth/update`, {
       method: "PUT",
       headers: {
         "Authorization": `Bearer ${authtoken}`,

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {useNavigate } from 'react-router-dom';
 import { urlConfig } from "../../config"
 import { useAppContext } from '../../context/AppContext';
+import {authorizedFetch} from '../../fetch'
+
 
 function ItemPage() {
     const navigate = useNavigate();
@@ -40,7 +42,7 @@ function ItemPage() {
           try {
             let url = `${urlConfig.backendUrl}/api/secondchance/items`;
             console.log(url);
-              const response = await fetch(url, {
+              const response = await authorizedFetch(url, {
                 method: 'POST',
                 body: formData
             });

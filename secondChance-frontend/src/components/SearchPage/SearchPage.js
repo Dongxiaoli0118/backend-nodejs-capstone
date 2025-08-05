@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {urlConfig} from '../../config';
+import {authorizedFetch} from '../../fetch'
 
 function SearchPage() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -16,7 +17,7 @@ function SearchPage() {
             try {
                 let url = `${urlConfig.backendUrl}/api/secondchance/items`
                 console.log(url)
-                const response = await fetch(url);
+                const response = await authorizedFetch(url);
                 if (!response.ok) {
                     //something went wrong
                     throw new Error(`HTTP error; ${response.status}`)
@@ -43,7 +44,7 @@ function SearchPage() {
         }).toString();
 
         try {
-            const response = await fetch(`${baseUrl}${queryParams}`);
+            const response = await authorizedFetch(`${baseUrl}${queryParams}`);
             if (!response.ok) {
                 throw new Error('Search failed');
             }

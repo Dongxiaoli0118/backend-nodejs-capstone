@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {urlConfig} from '../../config';
 import { useAppContext } from '../../context/AppContext';
+import {authorizedFetch} from '../../fetch.js'
 
 import './LoginPage.css';
 
@@ -22,7 +23,7 @@ function LoginPage() {
     const handleLogin = async (e) => {
         e.preventDefault();
         //api call
-        const res = await fetch(`${urlConfig.backendUrl}/api/auth/login`, {
+        const res = await authorizedFetch(`${urlConfig.backendUrl}/api/auth/login`, {
           method: 'POST',
           headers: {
             'content-type': 'application/json',

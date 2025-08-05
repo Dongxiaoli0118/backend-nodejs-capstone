@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { urlConfig } from "../../config"
 import { useAppContext } from '../../context/AppContext';
+import {authorizedFetch} from '../../fetch'
 
 import './DetailsPage.css';
 
@@ -25,7 +26,7 @@ function DetailsPage() {
         // get the gift to be rendered on the details page
         const fetchItem = async () => {
             try {
-                const response = await fetch(`${urlConfig.backendUrl}/api/secondchance/items/${itemId}`);
+                const response = await authorizedFetch(`${urlConfig.backendUrl}/api/secondchance/items/${itemId}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

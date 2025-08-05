@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {urlConfig} from '../../config';
 import { useAppContext } from '../../context/AppContext';
+import {authorizedFetch} from '../../fetch'
 
 import './RegisterPage.css';
 
@@ -16,7 +17,7 @@ function RegisterPage() {
 
     const handleRegister = async () => {
         //api call
-        const response = await fetch(`${urlConfig.backendUrl}/api/auth/register`, {
+        const response = await authorizedFetch(`${urlConfig.backendUrl}/api/auth/register`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
